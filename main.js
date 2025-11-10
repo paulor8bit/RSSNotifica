@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain, Notification, nativeTheme, shell } from 'electron';
+import { app, BrowserWindow, ipcMain, Notification, nativeTheme, shell, Tray, Menu } from 'electron';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import Store from 'electron-store';
@@ -18,6 +18,7 @@ const store = new Store({
 const parser = new RSSParser();
 
 let mainWindow;
+let tray;
 
 // Set the theme to dark
 nativeTheme.themeSource = 'dark';
@@ -35,10 +36,46 @@ function createWindow() {
 
     mainWindow.loadFile('index.html');
     // mainWindow.webContents.openDevTools(); // Uncomment for debugging
+
+    mainWindow.on('minimize', (event) => {
+        event.preventDefault();
+        mainWindow.hide();
+    });
+
+    mainWindow.on('close', (event) => {
+        if (!app.isQuitting) {
+            event.preventDefault();
+            mainWindow.hide();
+        }
+        return false;
+    });
 }
 
 app.whenReady().then(() => {
     createWindow();
+
+    tray = new Tray(path.join(__dirname, 'icon.png'));
+    const contextMenu = Menu.buildFromTemplate([
+        {
+            label: 'Abrir',
+            click: () => {
+                mainWindow.show();
+            }
+        },
+        {
+            label: 'Fechar',
+            click: () => {
+                app.isQuitting = true;
+                app.quit();
+            }
+        }
+    ]);
+    tray.setToolTip('RSS Notifica');
+    tray.setContextMenu(contextMenu);
+
+    tray.on('click', () => {
+        mainWindow.show();
+    });
 
     app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0) {
@@ -49,12 +86,6 @@ app.whenReady().then(() => {
     // Start checking RSS feeds periodically
     checkFeeds(); // Check once on startup
     setInterval(checkFeeds, 60 * 1000); // Check every minute
-});
-
-app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') {
-        app.quit();
-    }
 });
 
 // IPC Handlers
