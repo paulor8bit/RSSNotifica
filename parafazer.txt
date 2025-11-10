@@ -1,0 +1,7 @@
+Use esse icon.png ser também o icone do programa
+  quando aparece na barra de tarefas e quando fazer o
+  executavel dele
+
+
+Testar o botão de notificação mostrando o ultimo post que esta
+Faça quando clicar na notificação abrir o link do post
