@@ -13,7 +13,7 @@ temp/
 # Logs
 logs/
 *.log
-.rar
+*.rar
 
 # OS generated files
 .DS_Store
