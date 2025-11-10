@@ -1,0 +1,18 @@
+{
+  "name": "electron-rss-notifier",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "electron .",
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "electron": "^39.1.1",
+    "feedparser": "^2.2.10",
+    "nedb": "^1.8.0"
+  }
+}

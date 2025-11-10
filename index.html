@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Electron RSS Notifier</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; }
+        #feed-list { margin-top: 20px; }
+        .feed-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #eee; }
+        .feed-item button { margin-left: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Gerenciador de Feeds RSS</h1>
+
+    <form id="add-feed-form">
+        <input type="url" id="feed-url" placeholder="URL do Feed RSS" required style="width: 300px; padding: 5px;">
+        <button type="submit">Adicionar Feed</button>
+    </form>
+
+    <h2>Feeds Ativos</h2>
+    <div id="feed-list">
+        <!-- Feeds serão listados aqui pelo JavaScript -->
+        <p id="loading-message">Carregando feeds...</p>
+    </div>
+
+    <script src="renderer.js"></script>
+</body>
+</html>
