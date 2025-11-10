@@ -1,89 +1,64 @@
-// Lógica de Frontend para interagir com o main process via contextBridge
+document.addEventListener('DOMContentLoaded', async () => {
+    const feedUrlInput = document.getElementById('feed-url-input');
+    const addFeedButton = document.getElementById('add-feed-button');
+    const feedList = document.getElementById('feed-list');
 
-const form = document.getElementById('add-feed-form');
-const feedUrlInput = document.getElementById('feed-url');
-const feedListDiv = document.getElementById('feed-list');
+    const renderFeeds = async () => {
+        const [feeds, feedErrors, feedInfo] = await Promise.all([
+            window.electronAPI.getFeeds(),
+            window.electronAPI.getFeedErrors(),
+            window.electronAPI.getFeedInfo()
+        ]);
 
-// Função para renderizar a lista de feeds
-function renderFeeds(feeds) {
-    feedListDiv.innerHTML = '';
-    if (feeds.length === 0) {
-        feedListDiv.innerHTML = '<p>Nenhum feed adicionado ainda.</p>';
-        return;
-    }
+        feedList.innerHTML = ''; // Clear existing list
+        feeds.forEach(feedUrl => {
+            const listItem = document.createElement('li');
+            const error = feedErrors[feedUrl];
+            const info = feedInfo[feedUrl];
+            listItem.innerHTML = `
+                <div class="feed-info">
+                    <span>${feedUrl}</span>
+                    ${info ? `<span class="last-update">Última atualização: ${info.date} - <a href="#" class="post-link" data-link="${info.link}">"${info.title}"</a></span>` : ''}
+                </div>
+                <div class="feed-actions">
+                    ${error ? `<span class="error-message">${error}</span>` : ''}
+                    <button class="delete-feed-button" data-feed-url="${feedUrl}">Deletar</button>
+                </div>
+            `;
+            feedList.appendChild(listItem);
+        });
 
-    feeds.forEach(feed => {
-        const item = document.createElement('div');
-        item.className = 'feed-item';
-        item.innerHTML = `
-            <span>${feed.url}</span>
-            <button data-id="${feed._id}">Deletar</button>
-        `;
-        feedListDiv.appendChild(item);
+        document.querySelectorAll('.delete-feed-button').forEach(button => {
+            button.addEventListener('click', async (event) => {
+                const urlToDelete = event.target.dataset.feedUrl;
+                await window.electronAPI.deleteFeed(urlToDelete);
+                renderFeeds(); // Re-render the list after deletion
+            });
+        });
+
+        document.querySelectorAll('.post-link').forEach(link => {
+            link.addEventListener('click', (event) => {
+                event.preventDefault();
+                const postLink = event.target.dataset.link;
+                window.electronAPI.openLink(postLink);
+            });
+        });
+    };
+
+    addFeedButton.addEventListener('click', async () => {
+        const feedUrl = feedUrlInput.value.trim();
+        if (feedUrl) {
+            await window.electronAPI.addFeed(feedUrl);
+            feedUrlInput.value = ''; // Clear input
+            renderFeeds(); // Re-render the list after adding
+        }
     });
-}
 
-// Lidar com o envio do formulário para adicionar um novo feed
-form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const feedUrl = feedUrlInput.value;
-    try {
-        const result = await window.electronAPI.addFeed(feedUrl);
-        if (result.success) {
-            alert('Feed adicionado com sucesso!');
-            feedUrlInput.value = '';
-            // A lista será atualizada automaticamente pelo evento 'feeds-updated'
-        } else {
-            alert(`Erro ao adicionar feed: ${result.message}`);
-        }
-    } catch (error) {
-        console.error('Erro ao adicionar feed:', error);
-        alert('Ocorreu um erro ao tentar adicionar o feed.');
-    }
+    // Listen for the feeds-checked event from the main process
+    window.electronAPI.onFeedsChecked(() => {
+        renderFeeds();
+    });
+
+    // Initial render of feeds
+    renderFeeds();
 });
-
-// Lidar com o clique no botão de deletar
-feedListDiv.addEventListener('click', async (e) => {
-    if (e.target.tagName === 'BUTTON') {
-        const feedId = e.target.dataset.id;
-        if (confirm('Tem certeza que deseja deletar este feed?')) {
-            try {
-                const result = await window.electronAPI.deleteFeed(feedId);
-                if (result.success) {
-                    alert('Feed deletado com sucesso!');
-                    // A lista será atualizada automaticamente pelo evento 'feeds-updated'
-                } else {
-                    alert(`Erro ao deletar feed: ${result.message}`);
-                }
-            } catch (error) {
-                console.error('Erro ao deletar feed:', error);
-                alert('Ocorreu um erro ao tentar deletar o feed.');
-            }
-        }
-    }
-});
-
-// Inicialização: Carregar feeds existentes
-async function loadFeeds() {
-    try {
-        const feeds = await window.electronAPI.getFeeds();
-        renderFeeds(feeds);
-    } catch (error) {
-        console.error('Erro ao carregar feeds:', error);
-        feedListDiv.innerHTML = '<p>Erro ao carregar feeds.</p>';
-    }
-}
-
-// Escutar por atualizações na lista de feeds
-window.electronAPI.onFeedsUpdated((feeds) => {
-    renderFeeds(feeds);
-});
-
-// Escutar por novos posts para exibir notificações (apenas para fins de demonstração, a notificação real será no main process)
-window.electronAPI.onNewPost((post) => {
-    console.log('Novo post recebido:', post);
-    // No aplicativo final, a notificação será exibida pelo main process.
-    // Aqui, podemos apenas logar ou atualizar um status na UI.
-});
-
-loadFeeds();

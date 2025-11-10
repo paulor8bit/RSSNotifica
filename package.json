@@ -1,18 +1,27 @@
 {
-  "name": "electron-rss-notifier",
+  "name": "RSSNotifica",
   "version": "1.0.0",
-  "main": "index.js",
+  "description": "",
+  "main": "main.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/paulor8bit/RSSNotifica.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
+  "bugs": {
+    "url": "https://github.com/paulor8bit/RSSNotifica/issues"
+  },
+  "homepage": "https://github.com/paulor8bit/RSSNotifica#readme",
   "dependencies": {
     "electron": "^39.1.1",
-    "feedparser": "^2.2.10",
-    "nedb": "^1.8.0"
+    "electron-store": "^11.0.2",
+    "rss-parser": "^3.13.0"
   }
 }

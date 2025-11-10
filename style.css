@@ -1,0 +1,130 @@
+:root {
+    --background-color: #2c2f33;
+    --secondary-background-color: #23272a;
+    --text-color: #ffffff;
+    --primary-color: #9b59b6;
+    --primary-color-hover: #8e44ad;
+    --danger-color: #e74c3c;
+    --danger-color-hover: #c0392b;
+    --border-color: #4f545c;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 20px;
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+h1, h2 {
+    color: var(--primary-color);
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.add-feed-section {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+#feed-url-input {
+    width: 60%;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px 0 0 5px;
+    font-size: 16px;
+    background-color: var(--secondary-background-color);
+    color: var(--text-color);
+}
+
+#add-feed-button {
+    padding: 10px 15px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 0 5px 5px 0;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+#add-feed-button:hover {
+    background-color: var(--primary-color-hover);
+}
+
+#feed-list {
+    list-style: none;
+    padding: 0;
+    width: 80%;
+    margin: 0 auto;
+    background-color: var(--secondary-background-color);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#feed-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+#feed-list li:last-child {
+    border-bottom: none;
+}
+
+.feed-info {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    margin-right: 10px;
+    overflow: hidden;
+}
+
+.feed-info span {
+    word-break: break-all;
+}
+
+.last-update {
+    font-size: 12px;
+    color: #aaa;
+    margin-top: 5px;
+}
+
+.feed-actions {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.delete-feed-button {
+    background-color: var(--danger-color);
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.delete-feed-button:hover {
+    background-color: var(--danger-color-hover);
+}
+
+.error-message {
+    color: var(--danger-color);
+    margin-left: 10px;
+    font-size: 14px;
+}
+
+.post-link {
+    color: var(--primary-color);
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.post-link:hover {
+    color: var(--primary-color-hover);
+}
