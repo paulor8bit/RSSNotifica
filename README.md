@@ -1,5 +1,6 @@
 # RSSNotifica ✨
-<img width="752" height="498" alt="image" src="https://github.com/user-attachments/assets/3438522d-ffb6-45bf-b0f6-c9a0a267764c" />
+<img width="1898" height="981" alt="image" src="https://github.com/user-attachments/assets/23e32954-64dd-4772-8149-1cedfdd301b0" />
+
 
 Um aplicativo de desktop simples e fofinho para receber notificações dos seus feeds RSS favoritos! (´｡• ω •｡`)
 
