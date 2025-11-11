@@ -54,6 +54,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
+    const testNotificationButton = document.getElementById('test-notification-button');
+    if (testNotificationButton) {
+        testNotificationButton.addEventListener('click', async () => {
+            const result = await window.electronAPI.sendTestNotification();
+            if (result.success) {
+                alert(`Notificação de teste: ${result.message} ✨`);
+            } else {
+                alert(`Erro ao enviar notificação de teste: ${result.message} T-T`);
+            }
+        });
+    }
+
     // Listen for the feeds-checked event from the main process
     window.electronAPI.onFeedsChecked(() => {
         renderFeeds();

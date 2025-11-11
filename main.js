@@ -131,6 +131,39 @@ ipcMain.handle('delete-feed', (event, feedUrl) => {
     return feeds;
 });
 
+ipcMain.handle('send-test-notification', async () => {
+    const feeds = store.get('feeds', []);
+    if (feeds.length > 0) {
+        const feedUrl = feeds[0]; // Pega o primeiro feed para teste
+        try {
+            const feed = await parser.parseURL(feedUrl);
+            const latestPost = feed.items[0];
+            if (latestPost) {
+                const notification = new Notification({
+                    title: `[TESTE] Novo post em ${feed.title}`,
+                    body: latestPost.title,
+                    silent: false,
+                    data: latestPost.link
+                });
+
+                notification.on('click', () => {
+                    shell.openExternal(latestPost.link);
+                });
+
+                notification.show();
+                return { success: true, message: 'Notificação de teste enviada!' };
+            } else {
+                return { success: false, message: 'Nenhum post encontrado no feed para teste.' };
+            }
+        } catch (error) {
+            console.error(`Erro ao enviar notificação de teste para o feed ${feedUrl}:`, error);
+            return { success: false, message: `Erro ao processar feed para notificação de teste: ${error.message}` };
+        }
+    } else {
+        return { success: false, message: 'Nenhum feed configurado para enviar notificação de teste.' };
+    }
+});
+
 async function checkFeeds() {
     const feeds = store.get('feeds', []);
     const lastChecked = store.get('lastChecked', {});
@@ -155,11 +188,18 @@ async function checkFeeds() {
 
                 const feedLastChecked = lastChecked[feedUrl];
                 if (!feedLastChecked || new Date(latestPost.pubDate) > new Date(feedLastChecked)) {
-                    new Notification({
+                    const notification = new Notification({
                         title: `Novo post em ${feed.title}`,
                         body: latestPost.title,
                         silent: false,
-                    }).show();
+                        data: latestPost.link // Adiciona o link do post aqui
+                    });
+
+                    notification.on('click', () => {
+                        shell.openExternal(latestPost.link);
+                    });
+
+                    notification.show();
                     lastChecked[feedUrl] = latestPost.pubDate;
                 }
             }
